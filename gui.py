@@ -20,7 +20,8 @@ class Gui():
             "Bubble Sort" : Bubble,
             "Merge Sort" : Merge,
             "Quick Sort" : Quick,
-            "Insertion Sort" : Insertion
+            "Insertion Sort" : Insertion,
+            "Selection Sort" : Selection
         }
         self.algo_sel = None
         self.algo_menu = None
