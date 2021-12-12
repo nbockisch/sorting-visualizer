@@ -19,7 +19,8 @@ class Gui():
         self.algos = {
             "Bubble Sort" : Bubble,
             "Merge Sort" : Merge,
-            "Quick Sort" : Quick
+            "Quick Sort" : Quick,
+            "Insertion Sort" : Insertion
         }
         self.algo_sel = None
         self.algo_menu = None

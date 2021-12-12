@@ -7,7 +7,6 @@ class Quick(Algorithm):
 
     def sort(self) -> None:
         self.quick(0, len(self.nums) - 1)
-        print(f"nums after: {self.nums}")
 
     # Recursive function to run quick sort
     def quick(self, start: int, end: int) -> None:
