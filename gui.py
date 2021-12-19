@@ -130,28 +130,24 @@ class Gui():
         self.algo_sel = tk.StringVar()
         self.algo_sel.set(list(self.algos.keys())[0])
         self.algo_menu = tk.OptionMenu(self.window, self.algo_sel, 
-                                       *self.algos).pack()
+                                       *self.algos).grid(row = 0, column = 0, padx = (5, 5), pady = (10,10))
 
         self.nums_size = tk.IntVar(self.window)
         nums_slider = tk.Scale(self.window, from_=5, to=100, 
                                orient="horizontal", variable=self.nums_size, 
-                               command=self.resize_nums).pack()
+                               command=self.resize_nums).grid(row = 0, column = 1, padx = (5, 5), pady = (10,10))
         self.delay = tk.DoubleVar(self.window)
         delay_slider = tk.Scale(self.window, from_=0.2, to=0.01, 
                                resolution=0.01, orient="horizontal", 
-                                variable=self.delay).pack()
+                                variable=self.delay).grid(row = 0, column = 2, padx = (5, 5), pady = (10,10))
         sort_btn = tk.Button(self.window, text="Run Sort", 
-                                  command=self.run_sort).pack()
-        back_btn = tk.Button(self.window, text="Step Backard", 
-                                  command=self.step_backward).pack()
+                                  command=self.run_sort).grid(row = 0, column = 3, padx = (5, 5), pady = (10,10))
         play_btn = tk.Button(self.window, text="Play Sort",
-                                  command = self.play_sort).pack()
+                                  command = self.play_sort).grid(row = 0, column = 4, padx = (5, 5), pady=(10,10))
         pause_btn = tk.Button(self.window, text="Pause Sort",
-                                  command = self.pause_sort).pack()
-        forw_btn = tk.Button(self.window, text="Step Forward", 
-                                  command=self.step_forward).pack()
+                                  command = self.pause_sort).grid(row = 0, column = 5, padx = (5, 5), pady = (10,10))
         reset_btn = tk.Button(self.window, text="Reset Sort",
-                                  command = self.reset_sort).pack()
+                                  command = self.reset_sort).grid(row = 0, column = 6, padx = (5, 5), pady = (10,10))
 
         # Embed the graph in the window
         self.fig = Figure(figsize = (5, 5), dpi=100)
@@ -159,10 +155,10 @@ class Gui():
         self.plot.bar(np.arange(0, len(self.nums), 1), self.nums)
         self.g_canvas = FigureCanvasTkAgg(self.fig, master = self.window)
         self.g_canvas.draw()
-        self.g_canvas.get_tk_widget().pack(fill="both", expand=True)
+        self.g_canvas.get_tk_widget().grid(row = 1, column = 0, columnspan = 7, sticky = "ew")
 
         # test_btn = tk.Button(self.window, text="Updates?", 
-        #                      command=self.update_nums).pack()
+        #                      command=self.update_nums).grid()
 
         # Make sure graph data updates
         #plt_ani = animation.FuncAnimation(self.fig, self.update_graph, 
