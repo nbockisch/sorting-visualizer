@@ -34,12 +34,13 @@ class Gui():
         self.g_canvas = None
 
         # Data
-        self.nums = [8,5,2,6,1,3,9,7,4]
+        self.nums = random.sample(range(1, 11), 10)
         self.backup = np.copy(self.nums)
         self.algo = None # Holds the sorted array and steps for playback
 
     def update_graph(self, frame = (Operator.NONE, 0, 0)):
         self.plot.clear()
+        self.plot.axis('off')
 
         # Update data to reflect the current frame
         if (frame[0] == Operator.SWAP):
@@ -66,15 +67,8 @@ class Gui():
         self.g_canvas.draw()
         self.g_canvas.flush_events()
 
-    def update_nums(self):
-        self.plot.clear()
-        self.nums = [i * -1 for i in self.nums]
-        self.plot.bar(np.arange(0, len(self.nums), 1), self.nums)
-        self.g_canvas.draw()
-        self.g_canvas.flush_events()
-        print(self.nums)
-
-    def run_sort(self):
+    def run_sort(self, *args):
+        self.reset_sort()
         self.algo = self.algos[self.algo_sel.get()](np.copy(self.nums))
         self.algo.sort()
 
@@ -84,7 +78,7 @@ class Gui():
 
         while self.playback_i < len(self.algo.frames) and not self.is_paused:
             self.update_graph(self.algo.frames[self.playback_i])
-            time.sleep(self.delay.get())
+            time.sleep(1 / self.delay.get())
             self.playback_i += 1
 
     def step_forward(self):
@@ -105,11 +99,12 @@ class Gui():
         self.is_paused = True
 
     def reset_sort(self):
-        self.is_paused = True
-        self.nums = np.copy(self.backup)
-        self.playback_i = 0
+        if (self.algo):
+            self.is_paused = True
+            self.nums = np.copy(self.backup)
+            self.playback_i = 0
 
-        self.update_graph()
+            self.update_graph()
 
     def resize_nums(self, event):
         self.algo = None
@@ -118,6 +113,7 @@ class Gui():
         self.backup = np.copy(self.nums)
         self.playback_i = 0
         self.update_graph()
+        self.run_sort()
 
     # function to create and display the gui
     def start_gui(self):
@@ -129,29 +125,41 @@ class Gui():
         # Algorithm picker menu
         self.algo_sel = tk.StringVar()
         self.algo_sel.set(list(self.algos.keys())[0])
-        self.algo_menu = tk.OptionMenu(self.window, self.algo_sel, 
-                                       *self.algos).grid(row = 0, column = 0, padx = (5, 5), pady = (10,10))
+        self.algo_menu = tk.OptionMenu(self.window, self.algo_sel, *self.algos,
+                                       command=self.run_sort).grid(row = 0, 
+                                       column = 0, padx = (5, 5), 
+                                       pady = (10, 10))
+        self.run_sort() # Enable playing sort from the start
 
         self.nums_size = tk.IntVar(self.window)
-        nums_slider = tk.Scale(self.window, from_=5, to=100, 
+        nums_slider = tk.Scale(self.window, from_=10, to=100, label="Size",
                                orient="horizontal", variable=self.nums_size, 
-                               command=self.resize_nums).grid(row = 0, column = 1, padx = (5, 5), pady = (10,10))
+                               command=self.resize_nums).grid(row = 0, 
+                               column = 1, padx = (5, 5), pady = (10, 10))
+
         self.delay = tk.DoubleVar(self.window)
-        delay_slider = tk.Scale(self.window, from_=0.2, to=0.01, 
-                               resolution=0.01, orient="horizontal", 
-                                variable=self.delay).grid(row = 0, column = 2, padx = (5, 5), pady = (10,10))
-        sort_btn = tk.Button(self.window, text="Run Sort", 
-                                  command=self.run_sort).grid(row = 0, column = 3, padx = (5, 5), pady = (10,10))
+        delay_slider = tk.Scale(self.window, from_=1, to=1000, 
+                                label="Speed", resolution=0.01, 
+                                orient="horizontal", variable=self.delay).grid(
+                                row = 0, column = 2, padx = (5, 5), 
+                                pady = (10, 10))
+
         play_btn = tk.Button(self.window, text="Play Sort",
-                                  command = self.play_sort).grid(row = 0, column = 4, padx = (5, 5), pady=(10,10))
+                                  command = self.play_sort).grid(row = 0, 
+                                  column = 4, padx = (5, 5), pady=(10, 10))
+
         pause_btn = tk.Button(self.window, text="Pause Sort",
-                                  command = self.pause_sort).grid(row = 0, column = 5, padx = (5, 5), pady = (10,10))
+                                  command = self.pause_sort).grid(row = 0, 
+                                  column = 5, padx = (5, 5), pady = (10, 10))
+
         reset_btn = tk.Button(self.window, text="Reset Sort",
-                                  command = self.reset_sort).grid(row = 0, column = 6, padx = (5, 5), pady = (10,10))
+                                  command = self.reset_sort).grid(row = 0, 
+                                  column = 6, padx = (5, 5), pady = (10, 10))
 
         # Embed the graph in the window
         self.fig = Figure(figsize = (5, 5), dpi=100)
         self.plot = self.fig.add_subplot(1,1,1)
+        self.plot.axis('off')
         self.plot.bar(np.arange(0, len(self.nums), 1), self.nums)
         self.g_canvas = FigureCanvasTkAgg(self.fig, master = self.window)
         self.g_canvas.draw()
