@@ -67,8 +67,7 @@ class Gui():
         self.g_canvas.draw()
         self.g_canvas.flush_events()
 
-    def run_sort(self, *args):
-        self.reset_sort()
+    def run_sort(self, *args): self.reset_sort()
         self.algo = self.algos[self.algo_sel.get()](np.copy(self.nums))
         self.algo.sort()
 
@@ -119,42 +118,33 @@ class Gui():
     def start_gui(self):
         self.window = tk.Tk()
 
-        # Window properties
         self.window.title("Sorting Visualizer")
 
-        # Algorithm picker menu
+        # Gui elements
         self.algo_sel = tk.StringVar()
         self.algo_sel.set(list(self.algos.keys())[0])
         self.algo_menu = tk.OptionMenu(self.window, self.algo_sel, *self.algos,
-                                       command=self.run_sort).grid(row = 0, 
-                                       column = 0, padx = (5, 5), 
-                                       pady = (10, 10))
+                                       command=self.run_sort)
         self.run_sort() # Enable playing sort from the start
 
         self.nums_size = tk.IntVar(self.window)
         nums_slider = tk.Scale(self.window, from_=10, to=100, label="Size",
                                orient="horizontal", variable=self.nums_size, 
-                               command=self.resize_nums).grid(row = 0, 
-                               column = 1, padx = (5, 5), pady = (10, 10))
+                               command=self.resize_nums)
 
         self.delay = tk.DoubleVar(self.window)
         delay_slider = tk.Scale(self.window, from_=1, to=1000, 
                                 label="Speed", resolution=0.01, 
-                                orient="horizontal", variable=self.delay).grid(
-                                row = 0, column = 2, padx = (5, 5), 
-                                pady = (10, 10))
+                                orient="horizontal", variable=self.delay)
 
         play_btn = tk.Button(self.window, text="Play Sort",
-                                  command = self.play_sort).grid(row = 0, 
-                                  column = 4, padx = (5, 5), pady=(10, 10))
+                                  command = self.play_sort)
 
         pause_btn = tk.Button(self.window, text="Pause Sort",
-                                  command = self.pause_sort).grid(row = 0, 
-                                  column = 5, padx = (5, 5), pady = (10, 10))
+                                  command = self.pause_sort)
 
         reset_btn = tk.Button(self.window, text="Reset Sort",
-                                  command = self.reset_sort).grid(row = 0, 
-                                  column = 6, padx = (5, 5), pady = (10, 10))
+                                  command = self.reset_sort)
 
         # Embed the graph in the window
         self.fig = Figure(figsize = (5, 5), dpi=100)
@@ -163,12 +153,25 @@ class Gui():
         self.plot.bar(np.arange(0, len(self.nums), 1), self.nums)
         self.g_canvas = FigureCanvasTkAgg(self.fig, master = self.window)
         self.g_canvas.draw()
-        self.g_canvas.get_tk_widget().grid(row = 1, column = 0, columnspan = 7, sticky = "ew")
 
-        # test_btn = tk.Button(self.window, text="Updates?", 
-        #                      command=self.update_nums).grid()
+        # Make gui elements resize with the window
+        self.window.grid_columnconfigure(0, weight=1)
+        self.window.grid_columnconfigure(1, weight=1)
+        self.window.grid_columnconfigure(2, weight=1)
+        self.window.grid_columnconfigure(3, weight=1)
+        self.window.grid_columnconfigure(4, weight=1)
+        self.window.grid_columnconfigure(5, weight=1)
 
-        # Make sure graph data updates
-        #plt_ani = animation.FuncAnimation(self.fig, self.update_graph, 
-        #                                  interval=self.delay)
+        self.window.grid_rowconfigure(0, weight=1)
+        self.window.grid_rowconfigure(1, weight=1)
+
+        # Display all the gui elements in the window
+        self.algo_menu.grid(row=0, column=0, sticky="NSEW")
+        nums_slider.grid(row=0, column=1, sticky="NSEW")
+        delay_slider.grid(row=0, column=2, sticky="NSEW")
+        play_btn.grid(row=0, column=3, sticky="NSEW")
+        pause_btn.grid(row=0, column=4, sticky="NSEW")
+        reset_btn.grid(row=0, column=5, sticky="NSEW")
+        self.g_canvas.get_tk_widget().grid(row=1, column=0, columnspan=6, sticky="NSEW")
+
         self.window.mainloop()
