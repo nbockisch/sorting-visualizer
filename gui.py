@@ -1,6 +1,6 @@
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-from matplotlib.figure import Figure
-import matplotlib.animation as animation
+from matplotlib.figure import Figure 
+import matplotlib.animation as animation 
 import numpy as np
 import random
 import tkinter as tk
@@ -67,7 +67,8 @@ class Gui():
         self.g_canvas.draw()
         self.g_canvas.flush_events()
 
-    def run_sort(self, *args): self.reset_sort()
+    def run_sort(self, *args): 
+        self.reset_sort()
         self.algo = self.algos[self.algo_sel.get()](np.copy(self.nums))
         self.algo.sort()
 
@@ -116,6 +117,9 @@ class Gui():
 
     # function to create and display the gui
     def start_gui(self):
+        rows = 2
+        columns = 6
+
         self.window = tk.Tk()
 
         self.window.title("Sorting Visualizer")
@@ -155,15 +159,11 @@ class Gui():
         self.g_canvas.draw()
 
         # Make gui elements resize with the window
-        self.window.grid_columnconfigure(0, weight=1)
-        self.window.grid_columnconfigure(1, weight=1)
-        self.window.grid_columnconfigure(2, weight=1)
-        self.window.grid_columnconfigure(3, weight=1)
-        self.window.grid_columnconfigure(4, weight=1)
-        self.window.grid_columnconfigure(5, weight=1)
-
-        self.window.grid_rowconfigure(0, weight=1)
-        self.window.grid_rowconfigure(1, weight=1)
+        for i in range(columns):
+            self.window.grid_columnconfigure(i, weight=1)
+            
+        for i in range(rows):
+            self.window.grid_rowconfigure(i, weight=1)
 
         # Display all the gui elements in the window
         self.algo_menu.grid(row=0, column=0, sticky="NSEW")
